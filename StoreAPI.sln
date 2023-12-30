@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreAPI", "StoreAPI\StoreA
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "StoreDataBase", "StoreDataBase\StoreDataBase.sqlproj", "{1CCAD2C6-8CE2-477D-A965-53235DBB01F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreTesting", "StoreTesting\StoreTesting.csproj", "{B7F0171E-CF9E-4190-AECD-09A0D4A763F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{1CCAD2C6-8CE2-477D-A965-53235DBB01F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CCAD2C6-8CE2-477D-A965-53235DBB01F2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1CCAD2C6-8CE2-477D-A965-53235DBB01F2}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{B7F0171E-CF9E-4190-AECD-09A0D4A763F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7F0171E-CF9E-4190-AECD-09A0D4A763F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7F0171E-CF9E-4190-AECD-09A0D4A763F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7F0171E-CF9E-4190-AECD-09A0D4A763F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

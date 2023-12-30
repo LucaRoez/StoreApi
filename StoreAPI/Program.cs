@@ -1,8 +1,9 @@
+using Microsoft.Extensions.Configuration;
 using StoreAPI.Services.Repository;
 using System.Data.SqlClient;
+using static StoreAPI.Services.Repository.DbContext;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Add services to the container.
 var services = builder.Services;
@@ -15,7 +16,7 @@ services.AddSwaggerGen();
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 services.AddTransient(_ => new SqlConnection(connectionString));
-services.AddTransient<DbContext>();
+services.AddTransient<IDbContext, DbContext>();
 
 var app = builder.Build();
 

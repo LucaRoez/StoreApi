@@ -3,9 +3,8 @@ using System.Data.SqlClient;
 
 namespace StoreAPI.Services.Repository
 {
-    public class DbContext
+    public class DbContext : IDbContext
     {
-        private string _connectionString;
         private readonly SqlConnection _sqlConnection;
 
         public DbContext(SqlConnection sqlConnection)
@@ -15,10 +14,8 @@ namespace StoreAPI.Services.Repository
 
         public async Task<string> CreateNewRepositoryFor(string dbName)
         {
-            string connectionString = _sqlConnection.ConnectionString;
             try
             {
-                _connectionString = connectionString;
                 using (SqlConnection connection = _sqlConnection)
                 {
                     connection.Open();
@@ -39,10 +36,8 @@ namespace StoreAPI.Services.Repository
 
         public async Task<string> DropOldRepositoryFor(string dbName)
         {
-            string connectionString = _sqlConnection.ConnectionString;
             try
             {
-                _connectionString = connectionString;
                 using (SqlConnection connection = _sqlConnection)
                 {
                     connection?.Open();
@@ -63,14 +58,12 @@ namespace StoreAPI.Services.Repository
 
         public async Task<string> CreateNewEntityFor(Entity entity)
         {
-            string connectionString = _sqlConnection.ConnectionString;
             try
             {
-                _connectionString = String.Format(connectionString, entity.Database);
-
                 string columns = string.Join(", ", entity.Properties);
 
-                using (SqlConnection connection = _sqlConnection)
+                using (SqlConnection connection =
+                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
                 {
                     connection.Open();
                     string query = $"CREATE TABLE {entity.Name} ({columns});";
@@ -88,20 +81,27 @@ namespace StoreAPI.Services.Repository
             }
         }
 
-        public async Task<string> DeleteOldEntityFor(string dbName, string entity)
+        public async Task<string> DropOldEntityFor(string dbName, string entity)
         {
-            string connectionString = _sqlConnection.ConnectionString;
-            using (SqlConnection connection = _sqlConnection)
+            try
             {
-                connection.Open();
-                string query = $"DROP TABLE {entity};";
-                await using (SqlCommand command = connection.CreateCommand())
+                using (SqlConnection connection =
+                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, dbName)))
                 {
-                    command.CommandText = query;
-                    command.ExecuteNonQuery();
+                    connection.Open();
+                    string query = $"DROP TABLE {entity};";
+                    await using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
+                    }
                 }
+                return "204";
             }
-            return "204";
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
     }
 }

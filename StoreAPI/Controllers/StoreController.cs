@@ -8,8 +8,8 @@ namespace StoreAPI.Controllers
     [ApiController]
     public class StoreController : ControllerBase
     {
-        private readonly DbContext _dbContext;
-        public StoreController(DbContext dbContext)
+        private readonly IDbContext _dbContext;
+        public StoreController(IDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -21,8 +21,8 @@ namespace StoreAPI.Controllers
             return Created("http://localhost:5139/store/createnewdb", response);
         }
 
-        [HttpPost("dropolddb")]
-        public async Task<IActionResult> DropDb(string dbName)
+        [HttpDelete("dropolddb")]
+        public async Task<IActionResult> DeleteDb(string dbName)
         {
             string response = await _dbContext.DropOldRepositoryFor(dbName);
             return NoContent();
@@ -38,7 +38,7 @@ namespace StoreAPI.Controllers
         [HttpDelete("deleteoldentity")]
         public async Task<IActionResult> DeleteEntity(string dbName, string entityName)
         {
-            string response = await _dbContext.DeleteOldEntityFor(dbName, entityName);
+            string response = await _dbContext.DropOldEntityFor(dbName, entityName);
             Response.Headers.Add("Action-Message", response);
             return NoContent();
         }

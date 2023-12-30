@@ -1,0 +1,6 @@
+C:\Users\lucae\OneDrive\Documents\My Web Sites\StoreApi\StoreDataBase\bin\Debug\StoreDataBase.dacpac
+C:\Users\lucae\OneDrive\Documents\My Web Sites\StoreApi\StoreDataBase\bin\Debug\StoreDataBase.dll
+C:\Users\lucae\OneDrive\Documents\My Web Sites\StoreApi\StoreDataBase\bin\Debug\StoreDataBase.pdb
+C:\Users\lucae\OneDrive\Documents\My Web Sites\StoreApi\StoreDataBase\obj\Debug\StoreDataBase.sqlproj.AssemblyReference.cache
+C:\Users\lucae\OneDrive\Documents\My Web Sites\StoreApi\StoreDataBase\obj\Debug\StoreDataBase.dll
+C:\Users\lucae\OneDrive\Documents\My Web Sites\StoreApi\StoreDataBase\obj\Debug\StoreDataBase.pdb

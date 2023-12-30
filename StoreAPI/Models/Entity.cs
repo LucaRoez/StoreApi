@@ -4,6 +4,6 @@
     {
         public string Database { get; set; }
         public string Name { get; set; }
-        public List<string> Properties { get; set; }
+        public string[] Properties { get; set; }
     }
 }
