@@ -1,8 +1,8 @@
-using Microsoft.Extensions.DependencyInjection;
-using StoreAPI.Controllers;
 using StoreAPI.Services.Repository;
+using System.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 var services = builder.Services;
@@ -13,6 +13,8 @@ services.AddRouting(config => config.LowercaseUrls = true);
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
+services.AddTransient(_ => new SqlConnection(connectionString));
 services.AddTransient<DbContext>();
 
 var app = builder.Build();

@@ -6,13 +6,20 @@ namespace StoreAPI.Services.Repository
     public class DbContext
     {
         private string _connectionString;
+        private readonly SqlConnection _sqlConnection;
+
+        public DbContext(SqlConnection sqlConnection)
+        {
+            _sqlConnection = sqlConnection;
+        }
 
         public async Task<string> CreateNewRepositoryFor(string dbName)
         {
+            string connectionString = _sqlConnection.ConnectionString;
             try
             {
-                _connectionString = "Data Source=(localdb)\\mssqllocaldb;Integrated Security=True";
-                using (SqlConnection connection = new(_connectionString))
+                _connectionString = connectionString;
+                using (SqlConnection connection = _sqlConnection)
                 {
                     connection.Open();
                     string query = $"CREATE DATABASE {dbName};";
@@ -32,13 +39,14 @@ namespace StoreAPI.Services.Repository
 
         public async Task<string> CreateNewEntityFor(Entity entity)
         {
+            string connectionString = _sqlConnection.ConnectionString;
             try
             {
-                _connectionString = $"Data Source=(localdb)\\mssqllocaldb;Database={entity.Database};Integrated Security=True";
+                _connectionString = String.Format(connectionString, entity.Database);
 
                 string columns = string.Join(", ", entity.Properties);
 
-                using (SqlConnection connection = new(_connectionString))
+                using (SqlConnection connection = _sqlConnection)
                 {
                     connection.Open();
                     string query = $"CREATE TABLE {entity.Name} ({columns});";
@@ -58,8 +66,8 @@ namespace StoreAPI.Services.Repository
 
         public async Task<string> DeleteOldEntityFor(string dbName, string entity)
         {
-            _connectionString = $"Data Source=(localdb)\\mssqllocaldb;Database={dbName};Integrated Security=True";
-            using (SqlConnection connection = new(_connectionString))
+            string connectionString = _sqlConnection.ConnectionString;
+            using (SqlConnection connection = _sqlConnection)
             {
                 connection.Open();
                 string query = $"DROP TABLE {entity};";
