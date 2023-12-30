@@ -15,10 +15,17 @@ namespace StoreAPI.Controllers
         }
 
         [HttpPost("createnewdb")]
-        public async Task<IActionResult> CreateDbContext(string dbName)
+        public async Task<IActionResult> CreateDb(string dbName)
         {
             string response = await _dbContext.CreateNewRepositoryFor(dbName);
             return Created("http://localhost:5139/store/createnewdb", response);
+        }
+
+        [HttpPost("dropolddb")]
+        public async Task<IActionResult> DropDb(string dbName)
+        {
+            string response = await _dbContext.DropOldRepositoryFor(dbName);
+            return NoContent();
         }
 
         [HttpPost("createnewentity")]

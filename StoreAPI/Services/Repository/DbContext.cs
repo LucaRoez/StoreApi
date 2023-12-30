@@ -37,6 +37,30 @@ namespace StoreAPI.Services.Repository
             }
         }
 
+        public async Task<string> DropOldRepositoryFor(string dbName)
+        {
+            string connectionString = _sqlConnection.ConnectionString;
+            try
+            {
+                _connectionString = connectionString;
+                using (SqlConnection connection = _sqlConnection)
+                {
+                    connection?.Open();
+                    string query = $"DROP DATABASE {dbName}";
+                    await using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
+                    }
+                }
+                return "204";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
         public async Task<string> CreateNewEntityFor(Entity entity)
         {
             string connectionString = _sqlConnection.ConnectionString;
