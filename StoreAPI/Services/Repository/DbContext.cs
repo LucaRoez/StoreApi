@@ -81,6 +81,56 @@ namespace StoreAPI.Services.Repository
             }
         }
 
+        public async Task<string> AlterAndAddOldEntityFor(Entity entity)
+        {
+            try
+            {
+                string columns = string.Join(", ", entity.Properties);
+
+                using (SqlConnection connection =
+                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
+                {
+                    connection.Open();
+                    string query = $"ALTER TABLE {entity.Name} ADD {columns};";
+                    await using (SqlCommand cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandText = query;
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                return "204";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public async Task<string> AlterAndModifyOldEntityFor(Entity entity)
+        {
+            try
+            {
+                string oldColumns = string.Join(", ", entity.Properties);
+
+                using (SqlConnection connection =
+                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
+                {
+                    connection.Open();
+                    string query = $"ALTER TABLE {entity.Name} Modify {oldColumns};";
+                    await using (SqlCommand cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandText = query;
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                return "204";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
         public async Task<string> DropOldEntityFor(string dbName, string entity)
         {
             try

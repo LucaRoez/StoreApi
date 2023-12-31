@@ -50,6 +50,42 @@ namespace StoreTesting
         }
 
         [Fact]
+        public async Task Get_204NoContentStatusCode_ModifyAndAddEntity_OnSuccess()
+        {
+            Mock<IDbContext> mockDbContextService = new();
+            StoreController sut = new(mockDbContextService.Object);
+
+            Entity testDTO = new()
+            {
+                Database = "Test",
+                Name = "Entity",
+                Properties = new[] { "Body VARCHAR(500)", "Footer VARCHAR(50)" }
+            };
+
+            var result = (NoContentResult)await sut.AddInEntity(testDTO);
+
+            result.StatusCode.Should().Be(204);
+        }
+
+        [Fact]
+        public async Task Get_204NoContentStatusCode_ModifyEntity_OnSuccess()
+        {
+            Mock<IDbContext> mockDbContextService = new();
+            StoreController sut = new(mockDbContextService.Object);
+
+            Entity testDTO = new()
+            {
+                Database = "Test",
+                Name = "Entity",
+                Properties = new[] { "Name VARCHAR(30)", "Id BIGINT IDENTITY(1,1) PRIMARY KEY" }
+            };
+
+            var result = (NoContentResult)await sut.ModifyEntity(testDTO);
+
+            result.StatusCode.Should().Be(204);
+        }
+
+        [Fact]
         public async Task Get_204NoContentStatusCode_DeleteEntity_OnSuccess()
         {
             Mock<IDbContext> mockDbContextService = new();

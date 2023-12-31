@@ -7,6 +7,8 @@ namespace StoreAPI.Services.Repository
         Task<string> CreateNewRepositoryFor(string dbName);
         Task<string> DropOldRepositoryFor(string dbName);
         Task<string> CreateNewEntityFor(Entity entity);
+        Task<string> AlterAndAddOldEntityFor(Entity entity);
+        Task<string> AlterAndModifyOldEntityFor(Entity entity);
         Task<string> DropOldEntityFor(string dbName, string entity);
 
     }
