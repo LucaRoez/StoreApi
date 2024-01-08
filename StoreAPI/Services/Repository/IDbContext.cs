@@ -10,6 +10,5 @@ namespace StoreAPI.Services.Repository
         Task<string> AlterAndAddOldEntityFor(Entity entity);
         Task<string> AlterAndModifyOldEntityFor(Entity entity);
         Task<string> DropOldEntityFor(string dbName, string entity);
-
     }
 }

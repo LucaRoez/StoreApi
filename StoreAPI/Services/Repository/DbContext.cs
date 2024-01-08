@@ -1,157 +1,22 @@
 ﻿using StoreAPI.Models;
+using StoreAPI.Services.DDL;
 using System.Data.SqlClient;
 
 namespace StoreAPI.Services.Repository
 {
     public class DbContext : IDbContext
     {
-        private readonly SqlConnection _sqlConnection;
-
-        public DbContext(SqlConnection sqlConnection)
+        private readonly IDataDefinitionCommands _DDC;
+        public DbContext(IDataDefinitionCommands ddc)
         {
-            _sqlConnection = sqlConnection;
+            _DDC = ddc;
         }
 
-        public async Task<string> CreateNewRepositoryFor(string dbName)
-        {
-            try
-            {
-                using (SqlConnection connection = _sqlConnection)
-                {
-                    connection.Open();
-                    string query = $"CREATE DATABASE {dbName};";
-                    await using (SqlCommand command = connection.CreateCommand())
-                    {
-                        command.CommandText = query;
-                        command.ExecuteNonQuery();
-                    }
-                }
-                return "201";
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
-
-        public async Task<string> DropOldRepositoryFor(string dbName)
-        {
-            try
-            {
-                using (SqlConnection connection = _sqlConnection)
-                {
-                    connection?.Open();
-                    string query = $"DROP DATABASE {dbName}";
-                    await using (SqlCommand command = connection.CreateCommand())
-                    {
-                        command.CommandText = query;
-                        command.ExecuteNonQuery();
-                    }
-                }
-                return "204";
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
-
-        public async Task<string> CreateNewEntityFor(Entity entity)
-        {
-            try
-            {
-                string columns = string.Join(", ", entity.Properties);
-
-                using (SqlConnection connection =
-                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
-                {
-                    connection.Open();
-                    string query = $"CREATE TABLE {entity.Name} ({columns});";
-                    await using (SqlCommand cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = query;
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                return "201";
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
-
-        public async Task<string> AlterAndAddOldEntityFor(Entity entity)
-        {
-            try
-            {
-                string columns = string.Join(", ", entity.Properties);
-
-                using (SqlConnection connection =
-                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
-                {
-                    connection.Open();
-                    string query = $"ALTER TABLE {entity.Name} ADD {columns};";
-                    await using (SqlCommand cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = query;
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                return "204";
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
-
-        public async Task<string> AlterAndModifyOldEntityFor(Entity entity)
-        {
-            try
-            {
-                string oldColumns = string.Join(", ", entity.Properties);
-
-                using (SqlConnection connection =
-                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
-                {
-                    connection.Open();
-                    string query = $"ALTER TABLE {entity.Name} Modify {oldColumns};";
-                    await using (SqlCommand cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = query;
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                return "204";
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
-
-        public async Task<string> DropOldEntityFor(string dbName, string entity)
-        {
-            try
-            {
-                using (SqlConnection connection =
-                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, dbName)))
-                {
-                    connection.Open();
-                    string query = $"DROP TABLE {entity};";
-                    await using (SqlCommand command = connection.CreateCommand())
-                    {
-                        command.CommandText = query;
-                        command.ExecuteNonQuery();
-                    }
-                }
-                return "204";
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
+        public async Task<string> CreateNewRepositoryFor(string dbName) => await _DDC.CreateNewRepositoryFor(dbName);
+        public async Task<string> DropOldRepositoryFor(string dbName) => await _DDC.DropOldRepositoryFor(dbName);
+        public async Task<string> CreateNewEntityFor(Entity entity) => await _DDC.CreateNewEntityFor(entity);
+        public async Task<string> AlterAndAddOldEntityFor(Entity entity) => await _DDC.AlterAndAddOldEntityFor(entity);
+        public async Task<string> AlterAndModifyOldEntityFor(Entity entity) => await _DDC.AlterAndModifyOldEntityFor(entity);
+        public async Task<string> DropOldEntityFor(string dbName, string entity) => await _DDC.DropOldEntityFor(dbName, entity);
     }
 }

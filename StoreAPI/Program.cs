@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Configuration;
+using StoreAPI.Services.DDL;
+using StoreAPI.Services.DML;
 using StoreAPI.Services.Repository;
 using System.Data.SqlClient;
 using static StoreAPI.Services.Repository.DbContext;
@@ -17,6 +19,8 @@ services.AddSwaggerGen();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 services.AddTransient(_ => new SqlConnection(connectionString));
 services.AddTransient<IDbContext, DbContext>();
+services.AddTransient<IDataDefinitionCommands, DataDefinitionCommands>();
+services.AddTransient<IDataManipulationCommands, DataManipulationCommands>();
 
 var app = builder.Build();
 
