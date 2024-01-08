@@ -41,7 +41,7 @@ namespace StoreAPI.Services.DDL
                 using (SqlConnection connection = _sqlConnection)
                 {
                     connection?.Open();
-                    string query = $"DROP DATABASE {dbName}";
+                    string query = $"DROP DATABASE {dbName};";
                     await using (SqlCommand command = connection.CreateCommand())
                     {
                         command.CommandText = query;
