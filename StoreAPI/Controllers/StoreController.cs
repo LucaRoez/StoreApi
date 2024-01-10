@@ -57,12 +57,16 @@ namespace StoreAPI.Controllers
             return NoContent();
         }
 
-        [HttpGet("selectinentity")]
+        [HttpPost("selectinentity")]
         public async Task<IActionResult> SelectInEntity(Entity entity)
         {
             string[] response = await _dbContext.SelectInOldEntity(entity);
-            Response.Headers.Add("Action-Message", response[0]);
-            return Ok(response.Skip(1));
+            var finalResponse = new
+            {
+                StatusMessage = response[0],
+                Data = response.Skip(1).ToArray()
+            };
+            return Ok(finalResponse);
         }
 
         [HttpPost("insertintoentity")]

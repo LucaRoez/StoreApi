@@ -21,14 +21,32 @@ namespace StoreAPI.Services.DML
                     new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
                 {
                     connection.Open();
-                    string query = $"SELECT {entity.Properties} " +
+                    string query;
+                    if (entity.Condition != null)
+                    {
+                        if (entity.Condition != "")
+                        {
+                            query = $"SELECT {string.Join(",", entity.Properties)} " +
                         $"FROM {entity.Name} " +
                         $"WHERE {entity.Condition};";
+                        }
+                        else
+                        {
+                            query = $"SELECT {string.Join(",", entity.Properties)} " +
+                        $"FROM {entity.Name};";
+                        }
+                    }
+                    else
+                    {
+                        query = $"SELECT {string.Join(",", entity.Properties)} " +
+                    $"FROM {entity.Name};";
+                    }
+
                     await using (SqlCommand command = new(query, connection))
                     {
-                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            while (await reader.ReadAsync())
+                            while (reader.Read())
                             {
                                 object result = reader[0];
                                 if (result != null)

@@ -31,3 +31,4 @@ C:\Users\lucae\OneDrive\Documents\My Web Sites\StoreApi\StoreAPI\obj\Debug\net6.
 C:\Users\lucae\OneDrive\Documents\My Web Sites\StoreApi\StoreAPI\obj\Debug\net6.0\StoreAPI.pdb
 C:\Users\lucae\OneDrive\Documents\My Web Sites\StoreApi\StoreAPI\obj\Debug\net6.0\StoreAPI.genruntimeconfig.cache
 C:\Users\lucae\OneDrive\Documents\My Web Sites\StoreApi\StoreAPI\obj\Debug\net6.0\ref\StoreAPI.dll
+C:\Users\lucae\OneDrive\Documents\My Web Sites\StoreApi\StoreAPI\bin\Debug\net6.0\Newtonsoft.Json.dll
