@@ -11,27 +11,45 @@ namespace StoreAPI.Services.DML
         {
             _sqlConnection = sqlConnection;
         }
-        public async Task<string> SelectOldEntity(Entity entity)
+        public async Task<string[]> SelectInOldEntity(Entity entity)
         {
             try
             {
+                string[] response = new[] { "200" };
                 using (SqlConnection connection = _sqlConnection)
                 {
                     connection.Open();
                     string query = $"SELECT {entity.Properties} " +
                         $"FROM {entity.Database} " +
                         $"WHERE {entity.Condition};";
-                    await using (SqlCommand command = connection.CreateCommand())
+                    await using (SqlCommand command = new(query, connection))
                     {
-                        command.CommandText = query;
-                        command.ExecuteNonQuery();
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                object result = reader[0];
+                                if (result != null)
+                                {
+                                    if (result is string stringResult)
+                                    {
+                                        response.Append(result);
+                                    }
+                                    else
+                                    {
+                                        response.Append(result.ToString());
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-                return "200";
+                return response;
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                string[] error = new[] { ex.Message };
+                return error;
             }
         }
 
@@ -81,7 +99,7 @@ namespace StoreAPI.Services.DML
             }
         }
 
-        public async Task<string> UpdateOldEntity(Entity entity)
+        public async Task<string> UpdateInOldEntity(Entity entity)
         {
             try
             {

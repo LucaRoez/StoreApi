@@ -56,5 +56,35 @@ namespace StoreAPI.Controllers
             Response.Headers.Add("Action-Message", response);
             return NoContent();
         }
-    }
+
+        [HttpPost("selectinentity")]
+        public async Task<IActionResult> SelectInEntity(Entity entity)
+        {
+            string[] response = await _dbContext.SelectInOldEntity(entity);
+            Response.Headers.Add("Action-Message", response[0]);
+            return Ok(response.Skip(1));
+        }
+
+        [HttpPost("insertintoentity")]
+        public async Task<IActionResult> InsertIntoEntity(Entity entity)
+        {
+            string response = await _dbContext.InsertIntoOldEntity(entity);
+            return Created("http://localhost:5139/store/insertintoentity", response);
+        }
+
+        [HttpDelete("deletefromentity")]
+        public async Task<IActionResult> DeleteFromEntity(string dbName, string entityName)
+        {
+            string response = await _dbContext.DeleteFromOldEntity(dbName, entityName);
+            Response.Headers.Add("Action-Message", response);
+            return NoContent();
+        }
+
+        [HttpPut("modifyoldentity")]
+        public async Task<IActionResult> UpdateInEntity(Entity entity)
+        {
+            string response = await _dbContext.UpdateInOldEntity(entity);
+            return NoContent();
+        }
+        }
 }
