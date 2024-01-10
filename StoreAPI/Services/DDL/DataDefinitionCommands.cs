@@ -113,7 +113,7 @@ namespace StoreAPI.Services.DDL
                     new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
                 {
                     connection.Open();
-                    string query = $"ALTER TABLE {entity.Name} Modify {oldColumns};";
+                    string query = $"ALTER TABLE {entity.Name} ALTER COLUMN {oldColumns};";
                     await using (SqlCommand cmd = connection.CreateCommand())
                     {
                         cmd.CommandText = query;

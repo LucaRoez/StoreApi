@@ -1,4 +1,5 @@
 ﻿using StoreAPI.Models;
+using StoreAPI.Services.Repository;
 using System.Data.SqlClient;
 using System.Xml.Linq;
 
@@ -16,11 +17,12 @@ namespace StoreAPI.Services.DML
             try
             {
                 string[] response = new[] { "200" };
-                using (SqlConnection connection = _sqlConnection)
+                using (SqlConnection connection =
+                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
                 {
                     connection.Open();
                     string query = $"SELECT {entity.Properties} " +
-                        $"FROM {entity.Database} " +
+                        $"FROM {entity.Name} " +
                         $"WHERE {entity.Condition};";
                     await using (SqlCommand command = new(query, connection))
                     {
@@ -57,11 +59,11 @@ namespace StoreAPI.Services.DML
         {
             try
             {
-                using (SqlConnection connection = _sqlConnection)
+                using (SqlConnection connection =
+                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
                 {
                     connection.Open();
-                    string query = $"USE {entity.Database} GO " +
-                        $"INSERT INTO {entity.Name} " +
+                    string query = $"INSERT INTO {entity.Name} " +
                         $"VALUES ({string.Join(',', entity.Properties)});";
                     await using (SqlCommand command = connection.CreateCommand())
                     {
@@ -77,14 +79,22 @@ namespace StoreAPI.Services.DML
             }
         }
 
-        public async Task<string> DeleteFromOldEntity(string entity, string database)
+        public async Task<string> DeleteFromOldEntity(Entity entity)
         {
             try
             {
-                using (SqlConnection connection = _sqlConnection)
+                using (SqlConnection connection =
+                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
                 {
                     connection.Open();
-                    string query = $"DELETE {entity} FROM {database};";
+                    string query;
+                    if (entity.Condition != null)
+                    {
+                        if (entity.Condition != "") {  query = $"DELETE FROM {entity.Name} WHERE {entity.Condition};"; }
+                        else { query = $"DELETE FROM {entity.Name};"; }
+                    }
+                    else { query = $"DELETE FROM {entity.Name};"; }
+
                     await using (SqlCommand command = connection.CreateCommand())
                     {
                         command.CommandText = query;
@@ -103,12 +113,31 @@ namespace StoreAPI.Services.DML
         {
             try
             {
-                using (SqlConnection connection = _sqlConnection)
+                using (SqlConnection connection =
+                    new SqlConnection(DbContextUtilities.GetConnectionStringForDbRequest(_sqlConnection.ConnectionString, entity.Database)))
                 {
                     connection.Open();
-                    string query = $"UPDATE {entity.Name} SET {string.Join(",", entity.Properties)} " +
-                        $"FROM {entity.Database} " +
-                        $"WHERE {entity.Condition};";
+                    string query;
+                    if (entity.Condition != null)
+                    {
+                        if (entity.Condition != "")
+                        {
+                            query = $"UPDATE {entity.Name} " +
+                                $"SET {string.Join(",", entity.Properties)} " +
+                                $"WHERE {entity.Condition};";
+                        }
+                        else
+                        {
+                            query = $"UPDATE {entity.Name} " +
+                                $"SET {string.Join(",", entity.Properties)};";
+                        }
+                    }
+                    else
+                    {
+                        query = $"UPDATE {entity.Name} " +
+                            $"SET {string.Join(",", entity.Properties)};";
+                    }
+
                     await using (SqlCommand command = connection.CreateCommand())
                     {
                         command.CommandText = query;

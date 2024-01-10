@@ -57,7 +57,7 @@ namespace StoreAPI.Controllers
             return NoContent();
         }
 
-        [HttpPost("selectinentity")]
+        [HttpGet("selectinentity")]
         public async Task<IActionResult> SelectInEntity(Entity entity)
         {
             string[] response = await _dbContext.SelectInOldEntity(entity);
@@ -73,18 +73,18 @@ namespace StoreAPI.Controllers
         }
 
         [HttpDelete("deletefromentity")]
-        public async Task<IActionResult> DeleteFromEntity(string dbName, string entityName)
+        public async Task<IActionResult> DeleteFromEntity(Entity entity)
         {
-            string response = await _dbContext.DeleteFromOldEntity(dbName, entityName);
+            string response = await _dbContext.DeleteFromOldEntity(entity);
             Response.Headers.Add("Action-Message", response);
             return NoContent();
         }
 
-        [HttpPut("modifyoldentity")]
+        [HttpPut("updateinentity")]
         public async Task<IActionResult> UpdateInEntity(Entity entity)
         {
             string response = await _dbContext.UpdateInOldEntity(entity);
             return NoContent();
         }
-        }
+    }
 }

@@ -14,7 +14,7 @@ namespace StoreAPI.Services.Repository
         // DMCs
         Task<string[]> SelectInOldEntity(Entity entity);
         Task<string> InsertIntoOldEntity(Entity entity);
-        Task<string> DeleteFromOldEntity(string entity, string database);
+        Task<string> DeleteFromOldEntity(Entity entity);
         Task<string> UpdateInOldEntity(Entity entity);
     }
 }

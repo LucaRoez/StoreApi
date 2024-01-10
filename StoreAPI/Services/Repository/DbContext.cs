@@ -9,9 +9,10 @@ namespace StoreAPI.Services.Repository
     {
         private readonly IDataDefinitionCommands _DDC;
         private readonly IDataManipulationCommands _DMC;
-        public DbContext(IDataDefinitionCommands ddc)
+        public DbContext(IDataDefinitionCommands ddc, IDataManipulationCommands dmc)
         {
             _DDC = ddc;
+            _DMC = dmc;
         }
 
         // DDCs
@@ -25,7 +26,7 @@ namespace StoreAPI.Services.Repository
         // DMCs
         public async Task<string[]> SelectInOldEntity(Entity entity) => await _DMC.SelectInOldEntity(entity);
         public async Task<string> InsertIntoOldEntity(Entity entity) => await _DMC.InsertIntoOldEntity(entity);
-        public async Task<string> DeleteFromOldEntity(string entity, string database) => await _DMC.DeleteFromOldEntity(entity, database);
+        public async Task<string> DeleteFromOldEntity(Entity entity) => await _DMC.DeleteFromOldEntity(entity);
         public async Task<string> UpdateInOldEntity(Entity entity) => await _DMC.UpdateInOldEntity(entity);
     }
 }
